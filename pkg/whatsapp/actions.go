@@ -1,6 +1,8 @@
 package whatsapp
 
 import (
+	"context"
+
 	"go.mau.fi/whatsmeow"
 	waProto "go.mau.fi/whatsmeow/binary/proto"
 	"go.mau.fi/whatsmeow/types"
@@ -17,7 +19,7 @@ func sendText(rjid types.JID, message string) (string, error) {
 		Conversation: proto.String(message),
 	}
 
-	sendTime, err := client.SendMessage(rjid, msgID, msgContent)
+	sendTime, err := client.SendMessage(context.Background(), rjid, msgID, msgContent)
 	if err != nil {
 		return "", err
 	}

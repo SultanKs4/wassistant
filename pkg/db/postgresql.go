@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/SultanKs4/wassistant/models"
+	"github.com/SultanKs4/wassistant/message/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -31,7 +31,7 @@ func MigrateDbPg() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	db.AutoMigrate(&models.Message{})
+	db.AutoMigrate(&entity.Message{})
 
 	return db, nil
 }

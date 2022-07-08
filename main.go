@@ -21,10 +21,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer whatsapp.Disconnect()
+
 	// Listen to Ctrl+C (you can also do something else that prevents the program from exiting)
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	<-c
-
-	defer whatsapp.Disconnect()
 }

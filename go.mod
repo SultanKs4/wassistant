@@ -6,10 +6,10 @@ require (
 	github.com/jackc/pgx/v4 v4.16.1
 	github.com/joho/godotenv v1.4.0
 	github.com/mdp/qrterminal v1.0.1
-	go.mau.fi/whatsmeow v0.0.0-20220624072802-b64b2b2039d4
+	go.mau.fi/whatsmeow v0.0.0-20220629192020-6e4a9fb4bbe6
 	google.golang.org/protobuf v1.28.0
-	gorm.io/driver/postgres v1.3.7
-	gorm.io/gorm v1.23.6
+	gorm.io/driver/postgres v1.3.8
+	gorm.io/gorm v1.23.8
 )
 
 require (
@@ -24,7 +24,7 @@ require (
 	github.com/jackc/pgtype v1.11.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	go.mau.fi/libsignal v0.0.0-20220425070825-c40c839ee6a0 // indirect
+	go.mau.fi/libsignal v0.0.0-20220628090436-4d18b66b087e // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect

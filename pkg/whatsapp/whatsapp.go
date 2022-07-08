@@ -91,7 +91,7 @@ func composeStatus(rjid types.JID, isComposing bool, isAudio bool) {
 }
 
 func initClient(deviceStore *store.Device) {
-	clientLog := waLog.Stdout("Client", "DEBUG", true)
+	clientLog := waLog.Stdout("Client", "INFO", true)
 	client = whatsmeow.NewClient(deviceStore, clientLog)
 	client.AddEventHandler(eventHandler)
 }
