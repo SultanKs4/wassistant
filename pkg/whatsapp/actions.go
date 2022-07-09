@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func sendText(rjid types.JID, message string) (string, error) {
+func sendText(rjid types.JID, message string) error {
 	// Set Chat Presence
 	composeStatus(rjid, true, false)
 	defer composeStatus(rjid, false, false)
@@ -19,9 +19,9 @@ func sendText(rjid types.JID, message string) (string, error) {
 		Conversation: proto.String(message),
 	}
 
-	sendTime, err := client.SendMessage(context.Background(), rjid, msgID, msgContent)
+	_, err := client.SendMessage(context.Background(), rjid, msgID, msgContent)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return sendTime.String(), nil
+	return nil
 }
