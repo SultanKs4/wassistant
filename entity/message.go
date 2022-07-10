@@ -9,13 +9,11 @@ import (
 
 type Message struct {
 	gorm.Model
-	JidSender   string
-	PushName    string
-	FullName    string
 	JidReceiver string
 	Message     string
 	Timestamp   time.Time
 	IsGroup     bool
+	ContactID   uint
 }
 
 type message interface {
@@ -27,5 +25,5 @@ type MessageRepository interface {
 }
 
 type MessageService interface {
-	message
+	Store(ctx context.Context, message *Message, contact *Contact) error
 }

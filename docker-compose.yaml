@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  whatsapp:
+    container_name: wa-system
+    build: .
+    depends_on:
+      - redis
+  db:
+    container_name: postgresql
+    restart: always
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+volumes:
+    postgres:
+    

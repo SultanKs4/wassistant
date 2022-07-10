@@ -123,7 +123,7 @@ func login() error {
 }
 
 func Connect() error {
-	container, err := initContainer(os.Getenv("DATABASE_URL"))
+	container, err := initContainer(os.Getenv("POSTGRESQL_URL"))
 	if err != nil {
 		return err
 	}

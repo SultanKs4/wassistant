@@ -5,17 +5,24 @@ import (
 	"os/signal"
 	"syscall"
 
-	database "github.com/SultanKs4/wassistant/pkg/db"
+	"github.com/SultanKs4/wassistant/pkg/db"
 	"github.com/SultanKs4/wassistant/pkg/whatsapp"
 )
 
 func main() {
-	db, err := database.MigrateDbPg()
+	pgdb, err := db.MigrateDbPg()
 	if err != nil {
 		panic(err)
 	}
-	pg := database.NewPg(db)
-	defer pg.Disconnect()
+	pg := db.NewPg(pgdb)
+	pg.Disconnect()
+
+	rdb, err := db.CreateDbRedis()
+	if err != nil {
+		panic(err)
+	}
+	redb := db.NewRedis(rdb)
+	redb.Rdb.Close()
 
 	err = whatsapp.Connect()
 	if err != nil {
