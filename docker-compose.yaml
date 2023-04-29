@@ -16,7 +16,7 @@ services:
     volumes:
        - postgres:/data/postgres
     ports:
-      - "5432:5432"
+      - "5435:5432"
   redis:
     container_name: redis
     image: redis:7-alpine

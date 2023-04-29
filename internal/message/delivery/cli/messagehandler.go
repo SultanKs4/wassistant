@@ -5,7 +5,7 @@ import (
 
 	"go.mau.fi/whatsmeow/types"
 
-	"github.com/SultanKs4/wassistant/entity"
+	"github.com/SultanKs4/wassistant/internal/entity"
 )
 
 type messageHandler struct {

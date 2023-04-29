@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/SultanKs4/wassistant/entity"
+	"github.com/SultanKs4/wassistant/internal/entity"
 )
 
 type messageService struct {

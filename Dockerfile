@@ -1,5 +1,5 @@
 #Build
-FROM golang:1.18.3-alpine as builder
+FROM golang:1.20-alpine as builder
 
 WORKDIR /app
 
@@ -8,11 +8,11 @@ RUN go mod download
 
 COPY . ./
 
-RUN go build
+RUN go build cmd/wassistant/main.go
 
 #Deploy
 FROM alpine:latest
 
-COPY --from=builder /app/wassistant /app/wassistant
+COPY --from=builder /app/cmd/wassistant /app/cmd/wassistant
 
-CMD ["/app/wassistant"]
+CMD ["/app/cmd/wassistant"]

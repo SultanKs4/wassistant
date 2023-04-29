@@ -2,42 +2,31 @@ package db
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/SultanKs4/wassistant/entity"
+	"github.com/SultanKs4/wassistant/internal/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-type Pg struct {
-	Db *gorm.DB
+type Postgre struct {
+	*gorm.DB
 }
 
-func NewPg(db *gorm.DB) *Pg {
-	return &Pg{Db: db}
-}
-
-func CreateDbPg() (*gorm.DB, error) {
-	db, err := gorm.Open(postgres.Open(os.Getenv("POSTGRESQL_URL")))
+func NewPg(dsn string) (*Postgre, error) {
+	db, err := gorm.Open(postgres.Open(dsn))
 	if err != nil {
-		return db, fmt.Errorf("failed connect database gorm: %v", err.Error())
+		return nil, fmt.Errorf("failed connect database gorm: %v", err.Error())
 	}
 
-	return db, nil
+	return &Postgre{db}, nil
 }
 
-func MigrateDbPg() (*gorm.DB, error) {
-	db, err := CreateDbPg()
-	if err != nil {
-		return nil, err
-	}
-	db.AutoMigrate(&entity.Contact{}, &entity.Message{})
-
-	return db, nil
+func (pg *Postgre) Migrate() {
+	pg.AutoMigrate(&entity.Contact{}, &entity.Message{})
 }
 
-func (pg *Pg) Disconnect() error {
-	sqlDb, err := pg.Db.DB()
+func (pg *Postgre) Disconnect() error {
+	sqlDb, err := pg.DB.DB()
 	if err != nil {
 		return err
 	}

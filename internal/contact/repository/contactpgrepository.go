@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/SultanKs4/wassistant/entity"
+	"github.com/SultanKs4/wassistant/internal/entity"
 	"gorm.io/gorm"
 )
 

@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/SultanKs4/wassistant/entity"
+	"github.com/SultanKs4/wassistant/internal/entity"
 )
 
 type messageRepository struct {

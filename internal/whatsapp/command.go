@@ -2,17 +2,13 @@ package whatsapp
 
 import (
 	"fmt"
+
+	"go.mau.fi/whatsmeow/types"
 )
 
-func cat(phone string, name string) error {
-	rjid := getJid(phone)
-	if rjid.IsEmpty() {
-		return fmt.Errorf("phone not registered")
-	}
-
+func cat(waCli *waCli, rjid types.JID, name string) error {
 	msgSend := fmt.Sprintf("catto lul %v 😺", name)
-
-	err := sendText(rjid, msgSend)
+	err := waCli.SendText(rjid, msgSend)
 	if err != nil {
 		return fmt.Errorf("error send message: %v", err.Error())
 	}
