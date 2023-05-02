@@ -8,15 +8,15 @@ import (
 	"github.com/SultanKs4/wassistant/internal/entity"
 )
 
-type messageHandler struct {
+type MessageHandler struct {
 	msgService entity.MessageService
 }
 
-func NewMessageHandler(msgService entity.MessageService) *messageHandler {
-	return &messageHandler{msgService: msgService}
+func NewMessageHandler(msgService entity.MessageService) *MessageHandler {
+	return &MessageHandler{msgService: msgService}
 }
 
-func (h messageHandler) StoreMessageWhatsapp(jidClient *types.JID, info types.MessageInfo, contactName types.ContactInfo, message string) (err error) {
+func (h MessageHandler) StoreMessageWhatsapp(jidClient *types.JID, info types.MessageInfo, contactName types.ContactInfo, message string) (err error) {
 	jidReceiver := info.Chat.User
 	if jidReceiver == info.Sender.User && jidReceiver != jidClient.User {
 		jidReceiver = jidClient.User

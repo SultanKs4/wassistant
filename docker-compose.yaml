@@ -2,9 +2,14 @@ version: '3.9'
 services:
   whatsapp:
     container_name: wa-system
-    build: .
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
     depends_on:
+      - db
       - redis
+    networks:
+      - internal
   db:
     container_name: postgresql
     restart: always
@@ -16,12 +21,35 @@ services:
     volumes:
        - postgres:/data/postgres
     ports:
-      - "5435:5432"
+      - 5435:5432
+    networks:
+      - internal
   redis:
     container_name: redis
     image: redis:7-alpine
+    # ports:
+    #   - 6379:6379
+    networks:
+      - internal
+  minio:
+    container_name: minio
+    image: minio/minio
     ports:
-      - 6379:6379
+      - "9000:9000"
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: Strong#Pass#2022
+    command: server /data
+    networks:
+      - internal
 volumes:
-    postgres:
+  postgres:
+  minio_data:
+networks:
+  internal:
+    driver: bridge
+
+
     

@@ -30,12 +30,12 @@ func (wa *waCli) composeStatus(rjid types.JID, isComposing bool, isAudio bool) {
 	_ = wa.client.SendChatPresence(rjid, typeCompose, typeComposeMedia)
 }
 
-func (wa *waCli) SendText(rjid types.JID, message string) error {
+func (wa *waCli) SendText(ctx context.Context, rjid types.JID, message string) error {
 	// Set Chat Presence
 	wa.composeStatus(rjid, true, false)
 	defer wa.composeStatus(rjid, false, false)
 
-	_, err := wa.client.SendMessage(context.Background(), rjid, &waProto.Message{
+	_, err := wa.client.SendMessage(ctx, rjid, &waProto.Message{
 		Conversation: proto.String(message),
 	})
 	if err != nil {

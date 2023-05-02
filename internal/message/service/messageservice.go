@@ -16,14 +16,14 @@ func NewMessageService(msgRepo entity.MessageRepository, ctcRepo entity.ContactR
 	return &messageService{messageRepo: msgRepo, contactRepo: ctcRepo}
 }
 
-func (s messageService) Store(c context.Context, m *entity.Message, contact *entity.Contact) (err error) {
-	ctx, cancel := context.WithTimeout(c, 5*time.Second)
+func (s messageService) Store(ctx context.Context, m *entity.Message, ctc *entity.Contact) (err error) {
+	ctxTo, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
-	dbContact, err := s.contactRepo.FirstOrCreate(ctx, contact)
+	dbContact, err := s.contactRepo.FirstOrCreate(ctxTo, ctc)
 	if err != nil {
 		return
 	}
 	m.ContactID = dbContact.ID
-	err = s.messageRepo.Store(ctx, m)
+	err = s.messageRepo.Store(ctxTo, m)
 	return
 }

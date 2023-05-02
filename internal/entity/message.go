@@ -3,15 +3,13 @@ package entity
 import (
 	"context"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Message struct {
-	gorm.Model
+	ID          uint `gorm:"primarykey"`
 	JidReceiver string
 	Message     string
-	Timestamp   time.Time
+	Timestamp   time.Time `gorm:"index"`
 	IsGroup     bool
 	ContactID   uint
 }

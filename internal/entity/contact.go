@@ -5,8 +5,8 @@ import (
 )
 
 type Contact struct {
-	ID       uint `gorm:"primarykey"`
-	Jid      string
+	ID       uint   `gorm:"primarykey"`
+	Jid      string `gorm:"uniques"`
 	PushName string
 	FullName string
 	Messages []Message

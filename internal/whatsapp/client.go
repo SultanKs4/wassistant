@@ -6,6 +6,11 @@ import (
 	"fmt"
 	"os"
 
+	_ctcRepo "github.com/SultanKs4/wassistant/internal/contact/repository"
+	_msgHand "github.com/SultanKs4/wassistant/internal/message/delivery/cli"
+	_msgRepo "github.com/SultanKs4/wassistant/internal/message/repository"
+	_msgServ "github.com/SultanKs4/wassistant/internal/message/service"
+	"github.com/SultanKs4/wassistant/pkg/db/postgresql"
 	"github.com/mdp/qrterminal"
 	"go.mau.fi/whatsmeow"
 	waProto "go.mau.fi/whatsmeow/binary/proto"
@@ -19,34 +24,7 @@ import (
 type waCli struct {
 	client         *whatsmeow.Client
 	eventHandlerID uint32
-}
-
-func Connect(db *sql.DB) (*waCli, error) {
-	container, err := newContainer(db)
-	if err != nil {
-		return nil, err
-	}
-
-	deviceStore, err := newDeviceStore(container)
-	if err != nil {
-		return nil, err
-	}
-
-	wa := newClient(deviceStore)
-
-	if err = wa.login(); err != nil {
-		return nil, err
-	}
-
-	wa.register()
-
-	resp, err := wa.client.CheckUpdate()
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println("connected to whatsapp version: ", resp.CurrentVersion)
-
-	return wa, nil
+	msgHandler     *_msgHand.MessageHandler
 }
 
 func newContainer(db *sql.DB) (*sqlstore.Container, error) {
@@ -59,15 +37,26 @@ func newContainer(db *sql.DB) (*sqlstore.Container, error) {
 	return container, nil
 }
 
-func newDeviceStore(container *sqlstore.Container) (*store.Device, error) {
+func newDeviceStore(container *sqlstore.Container, jid types.JID) (*store.Device, error) {
+	var (
+		deviceStore *store.Device
+		err         error
+	)
 	// device default value
 	store.DeviceProps.Os = proto.String("wassistant")
 	store.DeviceProps.PlatformType = waProto.DeviceProps_DESKTOP.Enum()
 
 	// If you want multiple sessions, remember their JIDs and use .GetDevice(jid) or .GetAllDevices() instead.
-	deviceStore, err := container.GetFirstDevice()
-	if err != nil {
-		return nil, err
+	if jid.IsEmpty() {
+		deviceStore, err = container.GetFirstDevice()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		deviceStore, err = container.GetDevice(jid)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return deviceStore, nil
 }
@@ -89,7 +78,11 @@ func (wa *waCli) login() error {
 			if evt.Event == "code" {
 				qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
 			} else {
-				return fmt.Errorf("Login event: %v, error: %v", evt.Event, evt.Error)
+				if evt.Error != nil {
+					return fmt.Errorf("Login event: %v, error: %v", evt.Event, evt.Error)
+				} else {
+					return nil
+				}
 			}
 		}
 	} else {
@@ -99,17 +92,46 @@ func (wa *waCli) login() error {
 			return err
 		}
 	}
-
-	wa.client.SendPresence(types.PresenceAvailable)
-	wa.client.SendPresence(types.PresenceUnavailable)
-
 	return nil
 }
 
 func (wa *waCli) register() {
-	wa.eventHandlerID = wa.client.AddEventHandler(wa.MessageHandlerWhatsapp)
+	wa.eventHandlerID = wa.client.AddEventHandler(wa.handler)
 }
 
 func (wa *waCli) Disconnect() {
 	wa.client.Disconnect()
+}
+
+func Connect(db *postgresql.Postgre) (*waCli, error) {
+	container, err := newContainer(db.GetSqlDb())
+	if err != nil {
+		return nil, err
+	}
+
+	deviceStore, err := newDeviceStore(container, types.EmptyJID)
+	if err != nil {
+		return nil, err
+	}
+
+	wa := newClient(deviceStore)
+
+	if err = wa.login(); err != nil {
+		return nil, err
+	}
+
+	wa.register()
+
+	resp, err := wa.client.CheckUpdate()
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("connected to whatsapp version: ", resp.CurrentVersion)
+
+	mRepo := _msgRepo.NewMessageRepository(db.Db)
+	cRepo := _ctcRepo.NewContactRepository(db.Db)
+	mServ := _msgServ.NewMessageService(mRepo, cRepo)
+	wa.msgHandler = _msgHand.NewMessageHandler(mServ)
+
+	return wa, nil
 }

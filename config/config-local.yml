@@ -1,0 +1,19 @@
+Postgres:
+  Host: "127.0.0.1"
+  Port: 5432
+  User: dexwip
+  Password: sultan81199
+  Dbname: wassistant
+  Sslmode: disable
+  Timezone: Asia/Jakarta
+
+Redis:
+  Addr: localhost:6379
+  Password:
+  Db: 0
+
+Aws:
+  Endpoint: localhost:9000
+  AccessKey: minio
+  SecretKey: Strong#Pass#2022
+  UseSSL: false
